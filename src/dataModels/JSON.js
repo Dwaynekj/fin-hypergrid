@@ -56,6 +56,8 @@ var JSON = DataModel.extend('dataModels.JSON', {
      * * @memberOf dataModels.JSON.prototype
      */
     reset: function(options) {
+        this.selectedData = [];
+
         delete this.pipelineSchemaStash; // remove existing "own" version if any
 
         options = options || {};

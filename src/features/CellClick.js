@@ -1,41 +1,41 @@
-'use strict';
+"use strict";
 
-var Feature = require('./Feature');
+var Feature = require("./Feature");
 
 /**
  * @constructor
  * @extends Feature
  */
-var CellClick = Feature.extend('CellClick', {
+var CellClick = Feature.extend("CellClick", {
+  handleMouseMove: function(grid, event) {
+    var link = event.detail.properties.link,
+      isActionableLink = link && typeof link !== "boolean"; // actionable with truthy other than `true`
 
-    handleMouseMove: function(grid, event) {
-        var link = event.properties.link,
-            isActionableLink = link && typeof link !== 'boolean'; // actionable with truthy other than `true`
+    this.cursor = isActionableLink ? "pointer" : null;
 
-        this.cursor = isActionableLink ? 'pointer' : null;
+    if (this.next) {
+      this.next.handleMouseMove(grid, event);
+    }
+  },
 
-        if (this.next) {
-            this.next.handleMouseMove(grid, event);
-        }
-    },
-
-    /**
+  /**
      * @param {Hypergrid} grid
      * @param {CellEvent} event - the event details
      * @memberOf CellClick#
      */
-    handleClick: function(grid, event) {
-        var consumed = (event.isDataCell || event.isTreeColumn) && (
-            this.openLink(grid, event) !== undefined ||
-            grid.cellClicked(event)
-        );
+  handleClick: function(grid, event) {
+    var consumed =
+      (event.detail.isDataCell || event.isTreeColumn) &&
+      (this.openLink(grid, event.de) !== undefined ||
+        this.openLink(grid, event.detail) !== undefined ||
+        grid.cellClicked(event.detail));
 
-        if (!consumed && this.next) {
-            this.next.handleClick(grid, event);
-        }
-    },
+    if (!consumed && this.next) {
+      this.next.handleClick(grid, event);
+    }
+  },
 
-    /**
+  /**
      * @summary Open the cell's URL.
      *
      * @desc The URL is found in the cell's {@link module:defaults.link|link} property, which serves two functions:
@@ -58,54 +58,59 @@ var CellClick = Feature.extend('CellClick', {
      *
      * @memberOf CellClick#
      */
-    openLink: function(grid, cellEvent) {
-        var result, url,
-            dataRow = cellEvent.dataRow,
-            config = Object.create(cellEvent.properties, { dataRow: { value: dataRow } }),
-            value = config.exec(cellEvent.value),
-            linkProp = cellEvent.properties.link,
-            isArray = linkProp instanceof Array,
-            link = isArray ? linkProp[0] : linkProp;
+  openLink: function(grid, cellEvent) {
+    var result,
+      url,
+      dataRow = cellEvent.dataRow,
+      config = Object.create(cellEvent.properties, {
+        dataRow: { value: dataRow }
+      }),
+      value = config.exec(cellEvent.value),
+      linkProp = cellEvent.properties.link,
+      isArray = linkProp instanceof Array,
+      link = isArray ? linkProp[0] : linkProp;
 
-        // STEP 2: Fetch the URL
-        switch (typeof link) {
-            case 'string':
-                if (link === '*') {
-                    url = value;
-                } else if (/^\w+$/.test(link)) {
-                    url = dataRow[link];
-                }
-                break;
-
-            case 'function':
-                url = link(cellEvent);
-                break;
+    // STEP 2: Fetch the URL
+    switch (typeof link) {
+      case "string":
+        if (link === "*") {
+          url = value;
+        } else if (/^\w+$/.test(link)) {
+          url = dataRow[link];
         }
+        break;
 
-        if (url) {
-            // STEP 3: Decorate the URL
-            url = url.toString().replace(/%name/g, config.name).replace(/%value/g, value);
-
-            // STEP 4: Open the URL
-            if (isArray) {
-                linkProp = linkProp.slice();
-                linkProp[0] = url;
-                result = grid.windowOpen.apply(grid, linkProp);
-            } else {
-                result = grid.windowOpen(url, cellEvent.properties.linkTarget);
-            }
-        }
-
-        // STEP 5: Decorate the link as "visited"
-        if (result) {
-            cellEvent.setCellProperty('linkColor', grid.properties.linkVisitedColor);
-            grid.renderer.resetCellPropertiesCache(cellEvent);
-            grid.repaint();
-        }
-
-        return result;
+      case "function":
+        url = link(cellEvent);
+        break;
     }
 
+    if (url) {
+      // STEP 3: Decorate the URL
+      url = url
+        .toString()
+        .replace(/%name/g, config.name)
+        .replace(/%value/g, value);
+
+      // STEP 4: Open the URL
+      if (isArray) {
+        linkProp = linkProp.slice();
+        linkProp[0] = url;
+        result = grid.windowOpen.apply(grid, linkProp);
+      } else {
+        result = grid.windowOpen(url, cellEvent.properties.linkTarget);
+      }
+    }
+
+    // STEP 5: Decorate the link as "visited"
+    if (result) {
+      cellEvent.setCellProperty("linkColor", grid.properties.linkVisitedColor);
+      grid.renderer.resetCellPropertiesCache(cellEvent);
+      grid.repaint();
+    }
+
+    return result;
+  }
 });
 
 module.exports = CellClick;

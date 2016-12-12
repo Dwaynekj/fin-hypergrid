@@ -496,7 +496,7 @@ var Behavior = Base.extend('Behavior', {
      * @param {Object} event - all event information
      */
     cellDoubleClicked: function(cell, event) {
-
+        console.warn('Behavior.cellDoubleClicked is not in use');
     },
 
     lookupFeature: function(key) {

@@ -1341,6 +1341,9 @@ var Hypergrid = Base.extend('Hypergrid', {
         var columns = this.behavior.getActiveColumns();
         return columns.slice.apply(columns, arguments);
     },
+    selectionChanged: function() {
+        this.fireSyntheticSelectionChangedEvent();
+    },
 
     getHiddenColumns: function(){
         //A non in-memory behavior will be more troublesome
