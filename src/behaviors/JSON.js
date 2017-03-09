@@ -26,9 +26,6 @@ var JSON = Behavior.extend('behaviors.JSON', {
      */
     initialize: function(grid, options) {
         this.setData(options);
-        if (options.pipeline) {
-            this.setPipeline(options.pipeline);
-        }
     },
 
     features: [
@@ -117,43 +114,19 @@ var JSON = Behavior.extend('behaviors.JSON', {
     },
 
     /**
-     * @see {@link dataModels.JSON#setPipeline}
-     * @param {object} [DataSources] - New pipeline description. _(See {@link dataModels.JSON#setPipeline}.)_
-     * @param {object} [options] - Takes first argument position when `DataSources` omitted. _(See {@link dataModels.JSON#setPipeline}.)_
-     * @param {boolean} [options.apply=true] Apply data transformations to the new data.
+     * @deprecated
      * @memberOf behaviors.JSON.prototype
      */
     setPipeline: function(DataSources, options) {
-        this.dataModel.setPipeline.apply(this.dataModel, arguments);
-
-        if (!Array.isArray(DataSources)) {
-            options = DataSources;
-        }
-
-        if (!options || options.apply === undefined || options.apply) {
-            this.reindex();
-        }
+        return this.deprecated('setPipeline()', '', '2.1.0', arguments, 'No Longer Supported');
     },
 
     /**
-     * Pop pipeline stack.
-     * @see {@link dataModels.JSON#unstashPipeline}
-     * @param {string} [whichStash]
-     * @param {object} [options] - Takes first argument position when `DataSources` omitted.
-     * @param {boolean} [options.apply=true] Apply data transformations to the new data.
+     * @deprecated
      * @memberOf behaviors.JSON.prototype
      */
     unstashPipeline: function(stash, options) {
-        if (typeof stash === 'object') {
-            options = stash;
-            stash = undefined;
-        }
-
-        this.dataModel.unstashPipeline(stash);
-
-        if (!options || options.apply === undefined || options.apply) {
-            this.reindex();
-        }
+        return this.deprecated('unstashPipeline()', '', '2.1.0', arguments, 'No Longer Supported');
     },
 
     /**
@@ -167,7 +140,6 @@ var JSON = Behavior.extend('behaviors.JSON', {
      * Passed as 2nd param to {@link dataModel.JSON#setData}.
      * @param {function|object} [options.calculators] - Array of calculators or function returning same.
      * Passed as 3rd param to {@link dataModel.JSON#setData}.
-     * @param {boolean} [options.apply=true] Apply data transformations to the new data.
      */
     setData: function(dataRows, options) {
         if (!(Array.isArray(dataRows) || typeof dataRows === 'function')) {
@@ -189,8 +161,7 @@ var JSON = Behavior.extend('behaviors.JSON', {
 
         var grid = this.grid,
             schema = this.unwrap(options.schema), // *always* define a new schema on reset
-            schemaChanged = schema || !this.subgrids.lookup.data.schema.length, // schema will change if a new schema was provided OR data model has an empty schema now, which triggers schema generation on setData below
-            reindex = options.apply === undefined || options.apply; // defaults to true
+            schemaChanged = schema || !this.subgrids.lookup.data.schema.length; // schema will change if a new schema was provided OR data model has an empty schema now, which triggers schema generation on setData below
 
         // Inform interested data models of data.
         this.subgrids.forEach(function(dataModel) {
@@ -201,10 +172,6 @@ var JSON = Behavior.extend('behaviors.JSON', {
 
         if (grid.cellEditor) {
             grid.cellEditor.cancelEditing();
-        }
-
-        if (reindex) {
-            this.reindex();
         }
 
         if (schemaChanged) {
@@ -261,7 +228,7 @@ var JSON = Behavior.extend('behaviors.JSON', {
 
     getSelections: function() {
         return this.grid.selectionModel.getSelections();
-    },
+    }
 });
 
 JSON.columnEnumDecorators = columnEnumDecorators;
