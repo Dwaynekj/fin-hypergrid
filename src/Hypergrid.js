@@ -1133,7 +1133,7 @@ var Hypergrid = Base.extend('Hypergrid', {
      * @returns {boolean} The given row is fully visible.
      */
     isDataRowVisible: function(r) {
-        return this.renderer.isRowVisible(r);
+        return this.renderer.getVisibleDataRow(r);
     },
 
     /**
@@ -1175,7 +1175,8 @@ var Hypergrid = Base.extend('Hypergrid', {
      */
     insureModelRowIsVisible: function(rowIndex, offsetY) {
         var maxRows = this.getRowCount() - 1, // -1 excludes partially visible rows
-            indexToCheck = rowIndex + Math.sign(offsetY),
+            scrollOffset = (offsetY > -1) ? 2 : -1, // 2 and -1 means there's always 1 visible row above/below the active one
+            indexToCheck = rowIndex + scrollOffset,
             visible = !this.isDataRowVisible(indexToCheck) || rowIndex === maxRows;
 
         if (visible) {
