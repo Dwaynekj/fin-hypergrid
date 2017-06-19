@@ -3,7 +3,6 @@
  * @summary Data Control Interface object (data controller).
  * @desc Hypergrid's _data source_ objects transform data row collections (for example, by indexing them). These might include _filter_ data sources that hide data rows and _sorter_ data sources that rearrange data rows.
  *
- * Later, the transformations are executed (by {@link dataModels.JSON#reindex|reindex}). The `apply` method of each data source is called in turn. For example, a filtering data source's `apply` method would call its controller's {@link dataControlInterface#test|test} method, once for each data row (typically to build an index of included rows).
  */
 
 /**

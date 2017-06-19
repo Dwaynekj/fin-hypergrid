@@ -281,11 +281,11 @@ var JSON = DataModel.extend('dataModels.JSON', {
     },
 
     isTree: function() {
-        return this.dataSource.isDrillDown();
+        return false;
     },
 
     isTreeCol: function(event) {
-        return this.dataSource.isDrillDownCol(event);
+        return false;
     },
 
     /**
@@ -454,11 +454,6 @@ var JSON = DataModel.extend('dataModels.JSON', {
 
     /**
      * @summary Add a new data row to the grid.
-     * @desc If data source pipeline in use, to see the new row in the grid, you must eventually call:
-     * ```javascript
-     * this.grid.behavior.reindex();
-     * this.grid.behaviorChanged();
-     * ```
      * @param {object} newDataRow
      * @returns {object} The new row object.
      * @memberOf dataModels.JSON.prototype

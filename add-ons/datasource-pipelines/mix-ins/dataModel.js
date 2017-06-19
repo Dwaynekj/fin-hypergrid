@@ -567,6 +567,14 @@ module.exports = {
         return newDataRow;
     },
 
+    isTree: function() {
+        return this.dataSource.isDrillDown();
+    },
+
+    isTreeCol: function(event) {
+        return this.dataSource.isDrillDownCol(event);
+    },
+
     get schema() { return this.dataSource.schema; },
 
     set schema(schema) {

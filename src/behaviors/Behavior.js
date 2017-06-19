@@ -315,8 +315,6 @@ var Behavior = Base.extend('Behavior', {
         }, this);
 
         this.setAllColumnProperties(memento.columnProperties);
-
-        this.dataModel.reindex();
     },
 
     setAllColumnProperties: function(columnProperties) {

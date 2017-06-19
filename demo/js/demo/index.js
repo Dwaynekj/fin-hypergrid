@@ -30,6 +30,7 @@ window.onload = function() {
     var gridOptions = {
             data: people1,
             margin: { bottom: '17px', right: '17px'},
+            plugins: [Hypergrid.DataSourcePipelines],
             schema: Hypergrid.lib.fields.getSchema(people1),
             state: { color: 'orange' }
         },
@@ -38,9 +39,6 @@ window.onload = function() {
         dataModel = window.m = behavior.dataModel,
         initial = true,
         idx = behavior.columnEnum;
-    
-    grid.installPlugins(Hypergrid.DataSourcePipelines);
-
 
     console.log('Fields:');  console.dir(behavior.dataModel.schema.map(function(cs) { return cs.name; }));
     console.log('Headers:'); console.dir(behavior.dataModel.schema.map(function(cs) { return cs.header; }));
